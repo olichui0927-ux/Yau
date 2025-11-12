@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尋味•友境 | 友啤酒 - 重拾香港人情味</title>
+    <style>
+        /* 品牌色彩 - 基於友啤酒網站色調 */
+        :root {
+            --yau-primary: #1a365d;
+            --yau-secondary: #d4af37;
+            --yau-accent: #c2410c;
+            --yau-light: #f8f9fa;
+            --yau-dark: #2d3748;
+            --yau-brown: #8b4513;
+            --yau-gold: #d4af37;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft JhengHei", "PingFang TC", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--yau-primary), var(--yau-dark));
+            color: #333;
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .yau-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* 頁頭 - 配合品牌風格 */
+        .yau-header {
+            background: linear-gradient(135deg, var(--yau-primary), var(--yau-dark));
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+            position: relative;
+            border-bottom: 8px solid var(--yau-gold);
+        }
+
+        .yau-logo {
+            font-size: 4em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .yau-header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--yau-gold);
+        }
+
+        .yau-header .subtitle {
+            font-size: 1.4em;
+            opacity: 0.95;
+            color: var(--yau-light);
+            font-weight: 300;
+        }
+
+        /* 測驗內容區域 */
+        .quiz-section {
+            padding: 50px 30px;
+            display: none;
+        }
+
+        #intro-section {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, var(--yau-light), #ffffff);
+        }
+
+        .beer-illustration {
+            width: 220px;
+            height: 220px;
+            margin: 30px auto;
+            background: linear-gradient(135deg, var(--yau-gold), var(--yau-brown));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5em;
+            color: white;
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+            border: 8px solid var(--yau-gold);
+        }
+
+        /* 按鈕樣式 */
+        .yau-btn {
+            background: linear-gradient(135deg, var(--yau-brown), var(--yau-accent));
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.4em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 30px 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+            border: 3px solid var(--yau-gold);
+        }
+
+        .yau-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(139, 69, 19, 0.6);
+            background: linear-gradient(135deg, var(--yau-accent), var(--yau-brown));
+        }
+
+        /* 問題樣式 */
+        .question-container {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .question-number {
+            color: var(--yau-brown);
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 2em;
+            margin-bottom: 50px;
+            color: var(--yau-primary);
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        /* 選項樣式 */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .option-card {
+            background: white;
+            border: 4px solid var(--yau-gold);
+            padding: 30px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--yau-dark);
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .option-card:hover {
+            border-color: var(--yau-brown);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.3);
+            background: linear-gradient(135deg, #fffaf0, #fff8e1);
+        }
+
+        /* 進度條 */
+        .progress-container {
+            margin: 50px auto;
+            max-width: 600px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--yau-gold);
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, var(--yau-brown), var(--yau-accent));
+            border-radius: 8px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--yau-primary);
+            font-weight: 700;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        /* 圖片樣式 */
+        .question-image {
+            width: 300px;
+            height: 200px;
+            margin: 0 auto 30px;
+            border-radius: 15px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+            border: 4px solid var(--yau-gold);
+        }
+
+        .beer-image {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+            border-radius: 15px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+            border: 4px solid var(--yau-gold);
+        }
+
+        .result-image {
+            width: 250px;
+            height: 250px;
+            margin: 35px auto;
+            border-radius: 15px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+            border: 4px solid var(--yau-gold);
+        }
+
+        /* 結果頁面 */
+        .result-content {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .result-badge {
+            background: linear-gradient(135deg, var(--yau-brown), var(--yau-accent));
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 25px 0;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: 3px solid var(--yau-gold);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
+        }
+
+        .result-title {
+            font-size: 2.5em;
+            color: var(--yau-primary);
+            margin: 25px 0;
+            font-weight: 800;
+        }
+
+        .result-subtitle {
+            font-size: 1.4em;
+            color: var(--yau-brown);
+            margin-bottom: 35px;
+            font-weight: 600;
+        }
+
+        .result-details {
+            background: linear-gradient(135deg, var(--yau-light), #ffffff);
+            padding: 35px;
+            border-radius: 20px;
+            margin: 35px 0;
+            text-align: left;
+            border-left: 8px solid var(--yau-gold);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-details h3 {
+            color: var(--yau-primary);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        .result-details p {
+            margin-bottom: 25px;
+            font-size: 1.15em;
+            line-height: 1.7;
+            color: var(--yau-dark);
+        }
+
+        /* 分享按鈕 */
+        .share-section {
+            margin: 45px 0;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid transparent;
+        }
+
+        .facebook-btn {
+            background: linear-gradient(135deg, #3b5998, #4a6fbb);
+            color: white;
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+        }
+
+        .restart-btn {
+            background: transparent;
+            color: var(--yau-brown);
+            border: 3px solid var(--yau-brown);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 頁尾 */
+        .yau-footer {
+            background: linear-gradient(135deg, var(--yau-primary), var(--yau-dark));
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 5px solid var(--yau-gold);
+        }
+
+        .yau-footer a {
+            color: var(--yau-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .yau-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .question-text {
+                font-size: 1.7em;
+            }
+            
+            .yau-header h1 {
+                font-size: 2.2em;
+            }
+            
+            .yau-btn {
+                padding: 18px 40px;
+                font-size: 1.2em;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .share-btn {
+                width: 250px;
+                justify-content: center;
+            }
+            
+            .question-image {
+                width: 250px;
+                height: 150px;
+            }
+            
+            .beer-image, .result-image {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quiz-section {
+                padding: 30px 20px;
+            }
+            
+            .beer-illustration {
+                width: 180px;
+                height: 180px;
+                font-size: 3.5em;
+            }
+            
+            .question-image {
+                width: 200px;
+                height: 120px;
+            }
+            
+            .beer-image, .result-image {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .yau-header {
+                padding: 40px 20px;
+            }
+            
+            .yau-header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="yau-container">
+        <!-- 頁頭 -->
+        <header class="yau-header">
+            <div class="yau-logo">🍻</div>
+            <h1>尋味•友境</h1>
+            <p class="subtitle">找出你的專屬港式啤酒靈魂口味！</p>
+        </header>
+
+        <!-- 介紹頁 -->
+        <section id="intro-section" class="quiz-section">
+            <div class="beer-illustration">友</div>
+            <h2>準備好探索你的啤酒靈魂了嗎？</h2>
+            <p style="font-size: 1.3em; margin: 25px 0; color: var(--yau-dark);">
+                透過5條簡單問題，發掘最適合你性格的「友」啤酒口味！
+            </p>
+            <p style="color: var(--yau-brown); margin-bottom: 35px; font-size: 1.1em;">
+                經典三款 + 兩款全新香港人口味等你來發現！
+            </p>
+            <button class="yau-btn" onclick="startQuiz()">
+                立即尋味 →
+            </button>
+        </section>
+
+        <!-- 測驗問題頁 -->
+        <section id="quiz-section" class="quiz-section">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+                <div class="progress-text" id="progress-text">問題 1/5</div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-number" id="question-number">問題 1</div>
+                <div class="question-image" id="question-image"></div>
+                <h2 class="question-text" id="question-text"></h2>
+                
+                <div class="options-grid" id="options-container">
+                    <!-- 選項由JavaScript動態生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 結果頁 -->
+        <section id="result-section" class="quiz-section">
+            <div class="result-content">
+                <div class="result-badge" id="result-badge">你的專屬結果</div>
+                <h1 class="result-title" id="result-title"></h1>
+                <div class="result-subtitle" id="result-subtitle"></div>
+                <div class="result-image" id="result-image"></div>
+                
+                <div class="result-details">
+                    <h3>👤 性格分析</h3>
+                    <p id="result-personality"></p>
+                    
+                    <h3>🍻 風味描述</h3>
+                    <p id="result-flavor"></p>
+                    
+                    <h3>🎯 推薦場合</h3>
+                    <p id="result-occasion"></p>
+                </div>
+
+                <div class="share-section">
+                    <h3 style="margin-bottom: 25px; color: var(--yau-primary); font-size: 1.3em;">分享你的結果！</h3>
+                    <div class="share-buttons">
+                        <button class="share-btn facebook-btn" onclick="shareOnFacebook()">
+                            📘 Facebook
+                        </button>
+                        <button class="share-btn whatsapp-btn" onclick="shareOnWhatsApp()">
+                            💬 WhatsApp
+                        </button>
+                        <button class="share-btn restart-btn" onclick="restartQuiz()">
+                            🔄 再玩一次
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁尾 -->
+        <footer class="yau-footer">
+            <p style="font-size: 1.2em; margin-bottom: 10px;">© 2024 <strong>友啤酒</strong> - 重拾香港人情味</p>
+            <p style="margin-top: 15px; opacity: 0.9;">
+                探索更多：<a href="https://www.hkyau.com/chinese/主頁/關於-友/" target="_blank">官方網站</a> 
+                | 了解更多關於「友」的故事
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 測驗數據 - 包含圖片連結
+        const quizData = [
+            {
+                question: "星期五收工，你最想同三五知己去邊度Chill？",
+                image: "https://i.ytimg.com/vi/79hPJZAt5PU/maxresdefault.jpg",
+                options: [
+                    { text: "熱鬧喧嘩嘅大排檔", score: { 'G': 1 } },
+                    { text: "有情調嘅樓上Cafe / 酒吧", score: { 'T': 1 } },
+                    { text: "海濱長廊 / 維港岸邊", score: { 'W': 1 } },
+                    { text: "直接返屋企，攤喺沙發", score: { 'I': 1 } }
+                ]
+            },
+            {
+                question: "你覺得自己最似邊種香港特質？",
+                image: "https://www.tripsavvy.com/thmb/MeYcVLrItdeF9EHC1-79lqxbG2c=/2121x1414/filters:fill(auto,1)/junk-boat-in-hong-kong-victoria-harbour-1131126965-1488b726577244dc8c2c1f50d513cb88.jpg",
+                options: [
+                    { text: "拼搏快狠準", score: { 'I': 1 } },
+                    { text: "識飲識食識享受", score: { 'T': 1 } },
+                    { text: "念舊長情", score: { 'G': 1 } },
+                    { text: "創意多變", score: { 'S': 1 } }
+                ]
+            },
+            {
+                question: "以下邊款港式小食係你嘅「飛佛」？",
+                image: "https://centralionrock.com/wp-content/uploads/2023/08/hong-kong-street-food.jpg",
+                options: [
+                    { text: "香辣避風塘炒蟹", score: { 'S': 1 } },
+                    { text: "絲襪奶茶配蛋撻", score: { 'T': 1 } },
+                    { text: "熱辣辣煲仔飯", score: { 'G': 1 } },
+                    { text: "新奇口味雞蛋仔", score: { 'W': 1 } }
+                ]
+            },
+            {
+                question: "揀啤酒時，你最重視咩？",
+                image: "https://d39lxsrz40jt15.cloudfront.net/downloads/EDG2012/o_1fc9v9hetg24ddemj12hh1f07i.jpeg",
+                options: [
+                    { text: "清爽解渴", score: { 'G': 1 } },
+                    { text: "風味層次", score: { 'T': 1 } },
+                    { text: "經典不敗", score: { 'G': 1 } },
+                    { text: "獨特新奇", score: { 'S': 1 } }
+                ]
+            },
+            {
+                question: "你通常點樣形容一杯好飲嘅啤酒？",
+                image: "https://www.sassyhongkong.com/wp-content/uploads/2020/10/lee-lo-mei-yau-beer-events-500x500.png",
+                options: [
+                    { text: "「夠氣！夠爽！」", score: { 'G': 1 } },
+                    { text: "「好順喉，好醇厚！」", score: { 'W': 1 } },
+                    { text: "「係以前嗰種味道！」", score: { 'G': 1 } },
+                    { text: "「個味道好得意，未試過！」", score: { 'S': 1 } }
+                ]
+            }
+        ];
+
+        // 結果數據 - 包含圖片連結
+        const results = {
+            'G': {
+                title: "波友",
+                subtitle: "由球場到飯桌，由隊友到老友",
+                personality: "你係「隨和伙伴」！性格開朗易相處，就像波友一樣適合任何場合。你重視友誼，懂得享受生活中的簡單快樂，係朋友眼中最易相處嘅好夥伴。",
+                flavor: "易入口，飲「波友」！改良配方加入陳皮，保留手工啤酒風味之餘更易入口，熟悉的口味裡添上活力十足的陣陣柑橘香氣及餘韻，適合所有飲家，是任何場合的輕鬆之選。",
+                occasion: "任何場合的輕鬆之選，特別適合朋友聚會、睇波、燒烤等輕鬆時刻。",
+                image: "https://api.esquirehk.com/var/site/storage/images/_aliases/img_804_w_only/lifestyle/food-drinks/local-craft-beer-best-picks-2019-fw/yau-lager-group/3391433-1-chi-HK/YAU-Lager-Group.jpg"
+            },
+            'W': {
+                title: "發燒友",
+                subtitle: "將興趣燒到極致，將友情釀成經典",
+                personality: "你係「品味達人」！對生活有要求，懂得欣賞細節之美。就像得獎之作發燒友，你總能在平凡中發現不平凡，係朋友眼中的品味指標。",
+                flavor: "得獎之作，愛到「發燒」！香氣與回甘平衡至恰到好處。配方揉合美國及紐西蘭啤酒花，經冷泡法處理，散發獨特熱帶果香，是港式美食的絕配。",
+                occasion: "港式美食的絕配，適合配搭點心、小菜，或在品味時光中慢慢享受。",
+                image: "https://api.esquirehk.com/var/site/storage/images/_aliases/img_804_w_only/lifestyle/food-drinks/local-craft-beer-best-picks-2019-fw/yau-pale-ale-group/3391441-1-chi-HK/YAU-Pale-Ale-Group.jpg"
+            },
+            'I': {
+                title: "最佳損友",
+                subtitle: "嘴上唔放過你，心裡唔會冇你",
+                personality: "你係「風趣玩家」！充滿活力同創意，總能為朋友帶來驚喜。就像最佳損友一樣，你嘅幽默感同獨特個性令人印象深刻，係朋友圈中的開心果。",
+                flavor: "清新柑橘口味震懾味蕾！容易入口的IPA之選，靈感源自香港家傳戶曉的柑橘風味。突出的柑橘香氣令人即時愛上，並與啤酒花回甘味完美平衡，觸發味蕾新享受。",
+                occasion: "派對、聚會、需要提振氣氛的時刻，與好友共享歡樂時光。",
+                image: "https://static.thehoneycombers.com/wp-content/uploads/sites/6/2019/10/hong-kong-craft-beer-yau-brewery-tangerine-ipa-900x643.jpeg"
+            },
+            'T': {
+                title: "絲打盟友",
+                subtitle: "絲打盟友——唔係齋飲，係撐",
+                personality: "你係「文青知音」！鍾情於傳統與創新的完美結合。你懂得欣賞香港獨有文化，就像絲襪奶茶一樣，在經典中尋找新意，充滿品味同深度。",
+                flavor: "港式絲襪奶茶啤酒 - 革命性創新之作！將香港標誌性的絲襪奶茶風味與啤酒釀造工藝完美融合。茶香與麥香交織，口感順滑醇厚，帶有淡淡的奶香回甘，展現香港飲食文化精髓。",
+                occasion: "下午茶時光、文青聚會、與知己深度傾談，享受中西合璧的獨特體驗。",
+                image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&h=500&fit=crop"
+            },
+            'S': {
+                title: "串椒友",
+                subtitle: "唔串唔辣，唔啱點做老友？", 
+                personality: "你係「辛辣潮人」！大膽創新，勇於嘗試，就像避風塘炒蟹一樣充滿驚喜。你唔怕打破常規，總能為生活帶來刺激同新意，係朋友圈中的潮流引領者。",
+                flavor: "避風塘香辣啤酒 - 破格創新口味！靈感來自香港地道的避風塘風味，巧妙結合微辣香料與啤酒的清爽。辛辣惹味過後是啤酒的清爽回甘，帶來層次豐富的味覺體驗，展現香港人大膽創新的精神。",
+                occasion: "配搭重口味美食、朋友聚會想要新意、追求刺激味覺體驗的時刻。",
+                image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&h=500&fit=crop"
+            }
+        };
+
+        let currentQuestion = 0;
+        let userScores = { 'G': 0, 'W': 0, 'I': 0, 'T': 0, 'S': 0 };
+
+        function startQuiz() {
+            document.getElementById('intro-section').style.display = 'none';
+            document.getElementById('quiz-section').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = quizData[currentQuestion];
+            document.getElementById('question-number').textContent = `問題 ${currentQuestion + 1}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            // 設置問題圖片
+            const questionImage = document.getElementById('question-image');
+            questionImage.style.backgroundImage = `url('${question.image}')`;
+            
+            document.getElementById('progress-text').textContent = `問題 ${currentQuestion + 1}/5`;
+            
+            // 更新進度條
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card';
+                optionCard.textContent = option.text;
+                optionCard.onclick = () => selectOption(option.score);
+                optionsContainer.appendChild(optionCard);
+            });
+        }
+
+        function selectOption(score) {
+            // 計算分數
+            for (const key in score) {
+                userScores[key] += score[key];
+            }
+            
+            // 下一題或顯示結果
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            // 找出最高分的啤酒類型
+            let maxScore = -1;
+            let resultKey = 'G';
+            
+            for (const key in userScores) {
+                if (userScores[key] > maxScore) {
+                    maxScore = userScores[key];
+                    resultKey = key;
+                }
+            }
+            
+            // 處理平手情況
+            const tiedResults = [];
+            for (const key in userScores) {
+                if (userScores[key] === maxScore) {
+                    tiedResults.push(key);
+                }
+            }
+            
+            if (tiedResults.length > 1) {
+                // 按照優先級排序：S > T > I > W > G
+                const priority = ['S', 'T', 'I', 'W', 'G'];
+                for (const p of priority) {
+                    if (tiedResults.includes(p)) {
+                        resultKey = p;
+                        break;
+                    }
+                }
+            }
+
+            const result = results[resultKey];
+            
+            // 顯示結果
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+            
+            document.getElementById('result-title').textContent = result.title;
+            document.getElementById('result-subtitle').textContent = result.subtitle;
+            
+            // 設置結果圖片
+            const resultImage = document.getElementById('result-image');
+            resultImage.style.backgroundImage = `url('${result.image}')`;
+            
+            document.getElementById('result-personality').textContent = result.personality;
+            document.getElementById('result-flavor').textContent = result.flavor;
+            document.getElementById('result-occasion').textContent = result.occasion;
+        }
+
+        function shareOnFacebook() {
+            const resultTitle = document.getElementById('result-title').textContent;
+            const resultSubtitle = document.getElementById('result-subtitle').textContent;
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(`我測出來是「${resultTitle}」！${resultSubtitle} 你都快啲來試下「尋味•友境」心理測驗啦！🍻`);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+        }
+
+        function shareOnWhatsApp() {
+            const resultTitle = document.getElementById('result-title').textContent;
+            const resultSubtitle = document.getElementById('result-subtitle').textContent;
+            const text = encodeURIComponent(`我測出來是「${resultTitle}」！${resultSubtitle} 快啲來玩「尋味•友境」心理測驗，找出你的專屬港式啤酒靈魂口味！ ${window.location.href}`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userScores = { 'G': 0, 'W': 0, 'I': 0, 'T': 0, 'S': 0 };
+            
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('intro-section').style.display = 'block';
+        }
+    </script>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
