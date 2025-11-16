@@ -287,53 +287,22 @@
         color: #2c3e50;
     }
 
-    /* 分享按鈕 */
-    .share-section {
-        margin: 45px 0;
-    }
-
-    .share-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .share-btn {
-        padding: 18px 35px;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 1.1em;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border: 2px solid transparent;
-    }
-
-    .facebook-btn {
-        background: linear-gradient(135deg, #3b5998, #4a6fbb);
-        color: white;
-    }
-
-    .whatsapp-btn {
-        background: linear-gradient(135deg, #25D366, #128C7E);
-        color: white;
-    }
-
-    .restart-btn {
-        background: transparent;
-        color: #e67e22;
-        border: 3px solid #e67e22;
-    }
-
-    .share-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
-
+    <!-- 分享按鈕 -->
+<div class="share-section">
+    <h3 style="margin-bottom: 25px; color: var(--yau-primary); font-size: 1.3em;">分享你的結果！</h3>
+    <div class="share-buttons">
+        <button class="share-btn instagram-btn" onclick="shareOnInstagram()">
+            📷 Instagram
+        </button>
+        <button class="share-btn whatsapp-btn" onclick="shareOnWhatsApp()">
+            💬 WhatsApp
+        </button>
+        <button class="share-btn restart-btn" onclick="restartQuiz()">
+            🔄 再玩一次
+        </button>
+    </div>
+</div>
+       
     /* 頁尾 */
     .yau-footer {
         background: linear-gradient(135deg, #1e3a5f, #2c3e50);
@@ -719,13 +688,40 @@
             document.getElementById('result-occasion').textContent = result.occasion;
         }
 
-        function shareOnFacebook() {
-            const resultTitle = document.getElementById('result-title').textContent;
-            const resultSubtitle = document.getElementById('result-subtitle').textContent;
-            const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(`我測出來是「${resultTitle}」！${resultSubtitle} 你都快啲來試下「尋味•友境」心理測驗啦！🍻`);
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
-        }
+        function shareOnInstagram() {
+    const resultTitle = document.getElementById('result-title').textContent;
+    const resultSubtitle = document.getElementById('result-subtitle').textContent;
+    
+    // 創建分享圖片（可選）
+    const resultImage = document.getElementById('result-image');
+    
+    // 分享文字
+    const shareText = `🍺 尋味•友境 🍻\n\n我測出來是「${resultTitle}」！\n${resultSubtitle}\n\n快啲來玩心理測驗，找出你的專屬港式啤酒靈魂口味！\n\n🔗 ${window.location.href}\n\n#友啤酒 #心理測驗 #香港啤酒 #尋味友境`;
+    
+    // 由於 Instagram 限制，我們提供多種分享方式
+    if (navigator.share) {
+        // 使用 Web Share API（如果支持）
+        navigator.share({
+            title: '我的友啤酒測驗結果',
+            text: shareText,
+            url: window.location.href
+        }).catch(err => {
+            console.log('分享失敗:', err);
+            copyToClipboard(shareText);
+        });
+    } else {
+        // 複製到剪貼板
+        copyToClipboard(shareText);
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        alert('📋 結果已複製到剪貼板！\n\n請打開 Instagram：\n1. 建立新貼文\n2. 貼上文字\n3. 分享你的結果！');
+    }).catch(function(err) {
+        alert('請手動複製以下文字分享到 Instagram：\n\n' + text);
+    });
+}
 
         function shareOnWhatsApp() {
             const resultTitle = document.getElementById('result-title').textContent;
@@ -745,5 +741,6 @@
 </body>
 
 </html>                 
+
 
 
